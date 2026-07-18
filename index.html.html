@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parn Chanchanok — Photographer / Director of Photography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14120F;
+    --bg-alt:#1B1815;
+    --paper:#EDE6D8;
+    --stone:#9C9284;
+    --stone-dim:#6E675C;
+    --red:#C13B2C;
+    --amber:#CB9A50;
+    --line: rgba(237,230,216,0.14);
+    --line-strong: rgba(237,230,216,0.30);
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--bg);
+    color:var(--paper);
+    font-family:var(--font-body);
+    line-height:1.5;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  ul{ list-style:none; }
+  img{ display:block; width:100%; height:100%; object-fit:cover; }
+  button{ font:inherit; background:none; border:none; color:inherit; cursor:pointer; }
+
+  :focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:3px;
+  }
+
+  /* film grain overlay */
+  .grain{
+    position:fixed; inset:0; z-index:200; pointer-events:none;
+    opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{ max-width:1240px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- viewfinder corner brackets ---------- */
+  .viewfinder{ position:relative; }
+  .viewfinder::before, .viewfinder::after,
+  .viewfinder .br-tr, .viewfinder .br-bl{
+    content:""; position:absolute; width:22px; height:22px;
+    border-color:var(--paper); opacity:.55;
+    transition:opacity .3s ease;
+  }
+  .viewfinder::before{ top:14px; left:14px; border-top:1.5px solid; border-left:1.5px solid; }
+  .viewfinder::after{ bottom:14px; right:14px; border-bottom:1.5px solid; border-right:1.5px solid; }
+  .viewfinder .br-tr{ top:14px; right:14px; border-top:1.5px solid; border-right:1.5px solid; }
+  .viewfinder .br-bl{ bottom:14px; left:14px; border-bottom:1.5px solid; border-left:1.5px solid; }
+  .viewfinder:hover::before, .viewfinder:hover::after,
+  .viewfinder:hover .br-tr, .viewfinder:hover .br-bl{ opacity:1; }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(20,18,15,.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px;
+    max-width:1240px; margin:0 auto;
+  }
+  .logo{
+    font-family:var(--font-mono); font-size:.8rem; letter-spacing:.12em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo .dot{
+    width:7px; height:7px; border-radius:50%; background:var(--red);
+    box-shadow:0 0 6px var(--red);
+  }
+
+  /* mode toggle — the signature element */
+  .mode-toggle{
+    display:flex; align-items:center; gap:0;
+    border:1px solid var(--line-strong); border-radius:999px;
+    padding:3px; position:relative; font-family:var(--font-mono);
+    font-size:.68rem; letter-spacing:.1em;
+  }
+  .mode-toggle button{
+    position:relative; z-index:2; padding:7px 16px; border-radius:999px;
+    color:var(--stone); transition:color .35s ease;
+  }
+  .mode-toggle button.active{ color:var(--bg); }
+  .mode-thumb{
+    position:absolute; top:3px; bottom:3px; left:3px;
+    width:calc(50% - 3px); border-radius:999px;
+    background:var(--paper);
+    transition:transform .4s cubic-bezier(.65,0,.35,1), background .4s ease;
+  }
+  body[data-mode="motion"] .mode-thumb{
+    transform:translateX(100%);
+    background:var(--red);
+  }
+  body[data-mode="motion"] .mode-toggle button.active{ color:var(--paper); }
+
+  .contact-link{
+    font-family:var(--font-mono); font-size:.75rem; letter-spacing:.06em;
+    display:flex; align-items:center; gap:6px;
+    border-bottom:1px solid transparent;
+    padding-bottom:2px; transition:border-color .25s ease;
+  }
+  .contact-link:hover{ border-color:var(--paper); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:88px 0 60px;
+    display:grid; grid-template-columns:1.05fr .95fr; gap:56px;
+    align-items:center;
+  }
+  .hero-eyebrow{
+    font-family:var(--font-mono); font-size:.72rem; letter-spacing:.16em;
+    color:var(--stone); text-transform:uppercase; margin-bottom:22px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-eyebrow::before{ content:""; width:24px; height:1px; background:var(--stone-dim); }
+
+  h1.hero-name{
+    font-family:var(--font-display); font-weight:500;
+    font-size:clamp(2.6rem, 5.4vw, 4.6rem);
+    line-height:1.02; letter-spacing:-.01em;
+    margin-bottom:18px;
+  }
+  .hero-tagline{
+    font-family:var(--font-display); font-style:italic; font-weight:400;
+    font-size:clamp(1.2rem, 2vw, 1.55rem);
+    color:var(--amber); margin-bottom:22px;
+    transition:color .4s ease;
+  }
+  body[data-mode="motion"] .hero-tagline{ color:var(--red); }
+
+  .hero-desc{
+    color:var(--stone); max-width:46ch; font-size:.98rem; margin-bottom:34px;
+  }
+
+  .hero-meta{
+    display:flex; align-items:center; gap:14px;
+    font-family:var(--font-mono); font-size:.78rem; color:var(--stone);
+  }
+  .rec-indicator{ display:flex; align-items:center; gap:8px; opacity:0; transition:opacity .4s ease; }
+  body[data-mode="motion"] .rec-indicator{ opacity:1; }
+  .rec-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--red);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }
+  .frame-indicator{ opacity:1; transition:opacity .4s ease; }
+  body[data-mode="motion"] .frame-indicator{ opacity:0; position:absolute; }
+
+  .hero-frame{
+    aspect-ratio:4/5; border-radius:2px; overflow:hidden;
+    border:1px solid var(--line-strong);
+    position:relative; background:#000;
+  }
+  .hero-frame img{
+    filter:sepia(.12) saturate(.85) contrast(1.06) brightness(.92);
+    transition:filter .5s ease, transform 8s ease;
+  }
+  .hero-frame:hover img{ transform:scale(1.04); }
+  .letterbox-top, .letterbox-bottom{
+    position:absolute; left:0; right:0; background:#000;
+    height:0; transition:height .5s cubic-bezier(.65,0,.35,1);
+  }
+  .letterbox-top{ top:0; } .letterbox-bottom{ bottom:0; }
+  body[data-mode="motion"] .letterbox-top,
+  body[data-mode="motion"] .letterbox-bottom{ height:13%; }
+
+  .hero-frame-tag{
+    position:absolute; bottom:14px; left:14px; z-index:3;
+    font-family:var(--font-mono); font-size:.68rem; letter-spacing:.08em;
+    color:var(--paper); background:rgba(20,18,15,.55);
+    padding:5px 10px; border-radius:999px; border:1px solid var(--line);
+  }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee-strip{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    overflow:hidden; padding:16px 0; background:var(--bg-alt);
+  }
+  .marquee-track{
+    display:flex; gap:40px; white-space:nowrap;
+    font-family:var(--font-mono); font-size:.78rem; letter-spacing:.1em;
+    color:var(--stone-dim); width:max-content;
+    animation:scroll 28s linear infinite;
+  }
+  @keyframes scroll{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  .marquee-track span{ display:flex; align-items:center; gap:40px; }
+  .marquee-track em{ color:var(--amber); font-style:normal; }
+
+  /* ---------- SECTION HEADS ---------- */
+  section{ padding:90px 0; }
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:48px; gap:24px; flex-wrap:wrap;
+  }
+  .section-head .label{
+    font-family:var(--font-mono); font-size:.72rem; letter-spacing:.14em;
+    color:var(--stone); text-transform:uppercase; margin-bottom:10px; display:block;
+  }
+  .section-head h2{
+    font-family:var(--font-display); font-weight:500;
+    font-size:clamp(1.8rem, 3vw, 2.6rem); letter-spacing:-.01em;
+  }
+  .section-head p{ color:var(--stone); max-width:32ch; font-size:.92rem; }
+
+  /* ---------- GALLERY ---------- */
+  .gallery{
+    display:grid; grid-template-columns:repeat(12,1fr); gap:20px;
+  }
+  .tile{
+    position:relative; overflow:hidden; border-radius:2px;
+    border:1px solid var(--line);
+    cursor:default; transition:opacity .45s ease, transform .45s ease, grid-column .1s, grid-row .1s;
+  }
+  .tile[data-format="motion"]{ grid-column:span 8; aspect-ratio:16/8; }
+  .tile[data-format="still"]{ grid-column:span 4; grid-row:span 2; aspect-ratio:4/5.2; }
+  .tile img{
+    filter:sepia(.12) saturate(.85) contrast(1.06) brightness(.9);
+    transition:transform .7s ease, filter .5s ease;
+  }
+  .tile:hover img{ transform:scale(1.045); }
+
+  .tile-overlay{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(20,18,15,0) 45%, rgba(20,18,15,.92) 100%);
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:18px;
+  }
+  .tile-tag{
+    position:absolute; top:14px; left:14px; z-index:3;
+    font-family:var(--font-mono); font-size:.64rem; letter-spacing:.1em;
+    padding:5px 10px; border-radius:999px; text-transform:uppercase;
+    border:1px solid var(--line-strong); background:rgba(20,18,15,.55);
+  }
+  .tile[data-format="motion"] .tile-tag{ color:var(--red); border-color:rgba(193,59,44,.5); }
+  .tile[data-format="still"] .tile-tag{ color:var(--amber); border-color:rgba(203,154,80,.5); }
+
+  .tile-play{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:52px; height:52px; border-radius:50%;
+    border:1px solid rgba(237,230,216,.55);
+    background:rgba(20,18,15,.4);
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .3s ease, background .3s ease;
+  }
+  .tile[data-format="motion"]:hover .tile-play{ transform:translate(-50%,-50%) scale(1.08); background:rgba(193,59,44,.5); }
+  .tile-play svg{ width:14px; height:14px; fill:var(--paper); margin-left:2px; }
+
+  .tile-title{ font-family:var(--font-display); font-size:1.05rem; margin-bottom:4px; }
+  .tile-meta{
+    font-family:var(--font-mono); font-size:.7rem; color:var(--stone);
+    display:flex; justify-content:space-between; gap:10px;
+  }
+
+  .tile.is-hidden{
+    opacity:0; transform:scale(.97); pointer-events:none;
+    position:absolute; visibility:hidden;
+  }
+
+  /* ---------- REEL ---------- */
+  .reel{
+    background:var(--bg-alt); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .reel-grid{ display:grid; grid-template-columns:1fr; gap:28px; }
+  .reel-frame{
+    aspect-ratio:21/9; border-radius:2px; overflow:hidden; position:relative; border:1px solid var(--line-strong);
+    background:#000;
+  }
+  .reel-frame img{ filter:sepia(.15) saturate(.7) contrast(1.1) brightness(.6); }
+  .reel-frame .tile-play{ width:74px; height:74px; }
+  .reel-frame .tile-play svg{ width:20px; height:20px; }
+
+  .reel-info{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+    margin-top:20px; font-family:var(--font-mono); font-size:.78rem; color:var(--stone);
+  }
+  .reel-bar{
+    flex:1; min-width:160px; height:2px; background:var(--line-strong); position:relative; border-radius:2px;
+  }
+  .reel-bar-fill{ position:absolute; left:0; top:0; height:100%; width:0%; background:var(--red); border-radius:2px; }
+  .timecode{ color:var(--paper); }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid; grid-template-columns:.9fr 1.1fr; gap:64px; align-items:start;
+  }
+  .about-text p{ color:var(--stone); font-size:1rem; margin-bottom:18px; max-width:52ch; }
+  .about-text p strong{ color:var(--paper); font-weight:500; }
+  .stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:40px;
+  }
+  .stat-num{
+    font-family:var(--font-display); font-size:2.2rem; color:var(--amber);
+  }
+  .stat-label{
+    font-family:var(--font-mono); font-size:.68rem; color:var(--stone);
+    letter-spacing:.06em; margin-top:6px;
+  }
+  .kit-list{
+    font-family:var(--font-mono); font-size:.8rem; color:var(--stone);
+    border-top:1px solid var(--line); padding-top:20px;
+  }
+  .kit-list li{ display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line); }
+  .kit-list li span:last-child{ color:var(--paper); }
+
+  /* ---------- CLIENTS ---------- */
+  .clients{ border-top:1px solid var(--line); }
+  .client-row{
+    display:flex; flex-wrap:wrap; gap:14px 0; align-items:center;
+    font-family:var(--font-mono); font-size:.82rem; letter-spacing:.08em; color:var(--stone-dim);
+    text-transform:uppercase;
+  }
+  .client-row span.sep{ margin:0 20px; color:var(--line-strong); }
+
+  /* ---------- FOOTER ---------- */
+  footer{ padding:90px 0 50px; }
+  .footer-cta h2{
+    font-family:var(--font-display); font-weight:500;
+    font-size:clamp(1.9rem, 4.5vw, 3.4rem); max-width:16ch; margin-bottom:32px; letter-spacing:-.01em;
+  }
+  .footer-btn{
+    display:inline-flex; align-items:center; gap:10px;
+    border:1px solid var(--line-strong); padding:14px 26px; border-radius:999px;
+    font-family:var(--font-mono); font-size:.8rem; letter-spacing:.06em;
+    transition:background .3s ease, color .3s ease, border-color .3s ease;
+  }
+  .footer-btn:hover{ background:var(--paper); color:var(--bg); border-color:var(--paper); }
+
+  .footer-bottom{
+    margin-top:80px; padding-top:24px; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+    font-family:var(--font-mono); font-size:.72rem; color:var(--stone-dim);
+  }
+  .footer-social{ display:flex; gap:20px; }
+  .footer-social a:hover{ color:var(--paper); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 860px){
+    .hero{ grid-template-columns:1fr; padding-top:56px; }
+    .about-grid{ grid-template-columns:1fr; gap:36px; }
+    .tile[data-format="motion"]{ grid-column:span 12; }
+    .tile[data-format="still"]{ grid-column:span 6; }
+    nav{ padding:14px 20px; }
+    .wrap{ padding:0 20px; }
+    .contact-link span{ display:none; }
+    section{ padding:64px 0; }
+  }
+  @media (max-width: 560px){
+    .tile[data-format="still"]{ grid-column:span 12; grid-row:span 1; aspect-ratio:4/5; }
+    .mode-toggle{ font-size:.62rem; }
+    .stats{ grid-template-columns:1fr 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .marquee-track{ animation:none; }
+    .rec-dot{ animation:none; }
+    .hero-frame img, .tile img{ transition:none; }
+  }
+</style>
+</head>
+<body data-mode="stills">
+
+<div class="grain" aria-hidden="true"></div>
+
+<header>
+  <nav>
+    <a href="#top" class="logo"><span class="dot"></span> P · CHANCHANOK</a>
+
+    <div class="mode-toggle" role="group" aria-label="สลับมุมมองผลงาน">
+      <div class="mode-thumb" aria-hidden="true"></div>
+      <button type="button" class="active" data-mode-btn="stills" aria-pressed="true">STILLS</button>
+      <button type="button" data-mode-btn="motion" aria-pressed="false">MOTION</button>
+    </div>
+
+    <a class="contact-link" href="#contact">ติดต่องาน <span>→</span></a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero wrap" style="padding-top:24px;">
+    <div>
+      <div class="hero-eyebrow">PHOTOGRAPHER — DIRECTOR OF PHOTOGRAPHY</div>
+      <h1 class="hero-name">Parn Chanchanok</h1>
+      <p class="hero-tagline">เล่าเรื่องเดียวกัน ด้วยเลนส์สองแบบ</p>
+      <p class="hero-desc">
+        รับถ่ายภาพนิ่งและกำกับภาพวิดีโอ ตั้งแต่งานพอร์เทรตส่วนตัว สารคดีแบรนด์
+        ไปจนถึงแคมเปญโฆษณา — บันทึกช่วงเวลาให้หยุดนิ่งในเฟรมเดียว
+        หรือปล่อยให้มันเคลื่อนไหวต่อเป็นเรื่องราว แล้วแต่ว่าเรื่องนั้นควรถูกเล่าแบบไหน
+      </p>
+      <div class="hero-meta">
+        <span class="frame-indicator">FRAME NO. 014 · f/2.8 · ISO 400</span>
+        <span class="rec-indicator"><span class="rec-dot"></span> REC <span id="hero-timecode">00:00:00</span></span>
+      </div>
+    </div>
+
+    <div class="hero-frame viewfinder">
+      <div class="br-tr"></div><div class="br-bl"></div>
+      <div class="letterbox-top"></div>
+      <img src="https://picsum.photos/id/1011/900/1125" alt="ภาพเหมือนตัวอย่างผลงานของ Parn Chanchanok" loading="lazy">
+      <div class="letterbox-bottom"></div>
+      <span class="hero-frame-tag">SELECTED FRAME — 2025</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-strip">
+    <div class="marquee-track" aria-hidden="true">
+      <span>DOCUMENTARY <em>·</em> PORTRAIT <em>·</em> COMMERCIAL FILM <em>·</em> EDITORIAL <em>·</em> BRAND CAMPAIGN <em>·</em> MUSIC VIDEO</span>
+      <span>DOCUMENTARY <em>·</em> PORTRAIT <em>·</em> COMMERCIAL FILM <em>·</em> EDITORIAL <em>·</em> BRAND CAMPAIGN <em>·</em> MUSIC VIDEO</span>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <section class="wrap" id="work">
+    <div class="section-head">
+      <div>
+        <span class="label">Selected Work / 2023–2025</span>
+        <h2>ผลงานที่คัดสรร</h2>
+      </div>
+      <p>สลับดูงานภาพนิ่งหรือวิดีโอได้จากปุ่มด้านบน — แต่ละชิ้นมาจากกองถ่ายจริง</p>
+    </div>
+
+    <div class="gallery" id="gallery">
+
+      <article class="tile viewfinder" data-format="still">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <span class="tile-tag">Still</span>
+        <img src="https://picsum.photos/id/1011/700/900" alt="เช้าตรู่ที่ตลาดน้ำ" loading="lazy">
+        <div class="tile-overlay">
+          <div class="tile-title">เช้าตรู่ที่ตลาดน้ำ</div>
+          <div class="tile-meta"><span>ส่วนตัว · 2025</span><span>50mm · f1.8</span></div>
+        </div>
+      </article>
+
+      <article class="tile viewfinder" data-format="motion">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <span class="tile-tag">Motion</span>
+        <img src="https://picsum.photos/id/1015/1200/650" alt="AURA — Spring Campaign Film" loading="lazy">
+        <div class="tile-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z"/></svg></div>
+        <div class="tile-overlay">
+          <div class="tile-title">AURA — Spring Campaign Film</div>
+          <div class="tile-meta"><span>AURA STUDIOS · 2025</span><span>4K · 24fps · 01:12</span></div>
+        </div>
+      </article>
+
+      <article class="tile viewfinder" data-format="still">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <span class="tile-tag">Still</span>
+        <img src="https://picsum.photos/id/1025/700/900" alt="ภาพเหมือนช่างไม้แห่งเชียงคาน" loading="lazy">
+        <div class="tile-overlay">
+          <div class="tile-title">ช่างไม้แห่งเชียงคาน</div>
+          <div class="tile-meta"><span>ส่วนตัว · 2024</span><span>85mm · f2 · HP5</span></div>
+        </div>
+      </article>
+
+      <article class="tile viewfinder" data-format="motion">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <span class="tile-tag">Motion</span>
+        <img src="https://picsum.photos/id/1035/1200/650" alt="NORTH FIELD — Brand Documentary" loading="lazy">
+        <div class="tile-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z"/></svg></div>
+        <div class="tile-overlay">
+          <div class="tile-title">NORTH FIELD — Brand Documentary</div>
+          <div class="tile-meta"><span>North Field · 2024</span><span>4K · 25fps · 03:40</span></div>
+        </div>
+      </article>
+
+      <article class="tile viewfinder" data-format="still">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <span class="tile-tag">Still</span>
+        <img src="https://picsum.photos/id/1043/700/900" alt="MERIDIAN — Editorial Shoot" loading="lazy">
+        <div class="tile-overlay">
+          <div class="tile-title">MERIDIAN — Editorial Shoot</div>
+          <div class="tile-meta"><span>Meridian Mag · 2024</span><span>35mm · f1.4</span></div>
+        </div>
+      </article>
+
+      <article class="tile viewfinder" data-format="still">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <span class="tile-tag">Still</span>
+        <img src="https://picsum.photos/id/1050/700/900" alt="หมอกที่ดอยม่อนแจ่ม" loading="lazy">
+        <div class="tile-overlay">
+          <div class="tile-title">หมอกที่ดอยม่อนแจ่ม</div>
+          <div class="tile-meta"><span>ส่วนตัว · 2023</span><span>24mm · f8</span></div>
+        </div>
+      </article>
+
+      <article class="tile viewfinder" data-format="motion">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <span class="tile-tag">Motion</span>
+        <img src="https://picsum.photos/id/1062/1200/650" alt="SIAM EDITIONS — Behind the Seams" loading="lazy">
+        <div class="tile-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z"/></svg></div>
+        <div class="tile-overlay">
+          <div class="tile-title">SIAM EDITIONS — Behind the Seams</div>
+          <div class="tile-meta"><span>Siam Editions · 2023</span><span>4K · 24fps · 02:05</span></div>
+        </div>
+      </article>
+
+      <article class="tile viewfinder" data-format="still">
+        <div class="br-tr"></div><div class="br-bl"></div>
+        <span class="tile-tag">Still</span>
+        <img src="https://picsum.photos/id/1074/700/900" alt="คู่รักริมทะเล เกาะลันตา" loading="lazy">
+        <div class="tile-overlay">
+          <div class="tile-title">คู่รักริมทะเล เกาะลันตา</div>
+          <div class="tile-meta"><span>ส่วนตัว · 2023</span><span>50mm · f2.8</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- REEL -->
+  <section class="reel">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="label">Featured</span>
+          <h2>โชว์รีล 2026</h2>
+        </div>
+        <p>รวมงานวิดีโอในรอบปีที่ผ่านมา ตั้งแต่แคมเปญแบรนด์ถึงสารคดีสั้น</p>
+      </div>
+
+      <div class="reel-grid">
+        <div class="reel-frame viewfinder">
+          <div class="br-tr"></div><div class="br-bl"></div>
+          <img src="https://picsum.photos/id/1080/1400/620" alt="ภาพปกโชว์รีล 2026" loading="lazy">
+          <div class="tile-play" id="reel-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z"/></svg></div>
+        </div>
+        <div class="reel-info">
+          <span class="timecode" id="reel-time">00:00</span>
+          <div class="reel-bar"><div class="reel-bar-fill" id="reel-fill"></div></div>
+          <span class="timecode">01:42</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="wrap" id="about">
+    <div class="about-grid">
+      <div>
+        <span class="label">About</span>
+        <h2 style="font-family:var(--font-display); font-weight:500; font-size:clamp(1.8rem,3vw,2.4rem); margin-top:10px;">เกี่ยวกับ Parn</h2>
+      </div>
+      <div class="about-text">
+        <p>
+          <strong>Parn Chanchanok</strong> เริ่มถ่ายภาพจากกล้องฟิล์มตัวแรกของพ่อเมื่ออายุสิบหก
+          ก่อนจะขยับมาทำงานภาพเคลื่อนไหวเมื่อพบว่าบางเรื่องราวต้องการมากกว่าหนึ่งเฟรม
+          ทุกวันนี้รับงานทั้งสองสายควบคู่กัน — เลือกใช้สื่อให้เหมาะกับเรื่องที่ต้องเล่า
+          ไม่ใช่เลือกเรื่องให้เหมาะกับสื่อที่ถนัด
+        </p>
+        <p>
+          ทำงานร่วมกับแบรนด์ นิตยสาร และผู้กำกับหลายคนทั้งในกรุงเทพฯ และต่างจังหวัด
+          เน้นแสงธรรมชาติ จังหวะที่ไม่ปรุงแต่ง และความจริงของช่วงเวลานั้น ๆ
+        </p>
+
+        <div class="stats">
+          <div>
+            <div class="stat-num">12+</div>
+            <div class="stat-label">ปีในวงการ</div>
+          </div>
+          <div>
+            <div class="stat-num">80+</div>
+            <div class="stat-label">โปรเจกต์ที่ร่วมงาน</div>
+          </div>
+          <div>
+            <div class="stat-num">6</div>
+            <div class="stat-label">จังหวัด/ประเทศที่ตามไปถ่าย</div>
+          </div>
+        </div>
+
+        <ul class="kit-list">
+          <li><span>Stills</span><span>35mm rangefinder · digital full-frame</span></li>
+          <li><span>Motion</span><span>Cinema camera · gimbal · prime lens set</span></li>
+          <li><span>ฐานที่ตั้ง</span><span>กรุงเทพฯ — รับงานทั่วประเทศ</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENTS -->
+  <section class="clients">
+    <div class="wrap">
+      <span class="label" style="display:block; margin-bottom:24px;">Selected Clients</span>
+      <div class="client-row">
+        <span>AURA STUDIOS</span><span class="sep">/</span>
+        <span>NORTH FIELD</span><span class="sep">/</span>
+        <span>SIAM EDITIONS</span><span class="sep">/</span>
+        <span>MERIDIAN MAG</span><span class="sep">/</span>
+        <span>KHOA COFFEE CO.</span><span class="sep">/</span>
+        <span>PAPER TRAIL FILMS</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-cta">
+      <span class="label">Get in touch</span>
+      <h2>พร้อมเล่าเรื่องราวต่อไปด้วยกันไหม</h2>
+      <a class="footer-btn" href="mailto:hello@parn-chanchanok.studio">
+        hello@parn-chanchanok.studio <span>→</span>
+      </a>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Parn Chanchanok — Photographer / Director of Photography</span>
+      <div class="footer-social">
+        <a href="#" onclick="return false;">Instagram</a>
+        <a href="#" onclick="return false;">Vimeo</a>
+        <a href="#" onclick="return false;">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---- mode toggle ----
+  const body = document.body;
+  const modeBtns = document.querySelectorAll('[data-mode-btn]');
+  const tiles = document.querySelectorAll('.tile');
+
+  function setMode(mode){
+    body.setAttribute('data-mode', mode);
+    modeBtns.forEach(btn => {
+      const active = btn.dataset.modeBtn === mode;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active);
+    });
+    tiles.forEach(tile => {
+      tile.classList.toggle('is-hidden', tile.dataset.format !== mode);
+    });
+  }
+
+  modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => setMode(btn.dataset.modeBtn));
+  });
+
+  setMode('stills');
+
+  // ---- hero rec timecode ----
+  const heroTC = document.getElementById('hero-timecode');
+  let heroSeconds = 0;
+  setInterval(() => {
+    if(body.getAttribute('data-mode') === 'motion'){
+      heroSeconds++;
+      const m = String(Math.floor(heroSeconds/60)).padStart(2,'0');
+      const s = String(heroSeconds%60).padStart(2,'0');
+      heroTC.textContent = `00:${m}:${s}`;
+    }
+  }, 1000);
+
+  // ---- reel scrubber ----
+  const reelTime = document.getElementById('reel-time');
+  const reelFill = document.getElementById('reel-fill');
+  const reelPlay = document.getElementById('reel-play');
+  const REEL_DURATION = 102; // 01:42
+  let reelSeconds = 0;
+  let reelPlaying = false;
+  let reelInterval = null;
+
+  function formatMMSS(sec){
+    const m = String(Math.floor(sec/60)).padStart(2,'0');
+    const s = String(sec%60).padStart(2,'0');
+    return `${m}:${s}`;
+  }
+
+  reelPlay.addEventListener('click', () => {
+    reelPlaying = !reelPlaying;
+    if(reelPlaying){
+      reelInterval = setInterval(() => {
+        reelSeconds++;
+        if(reelSeconds > REEL_DURATION){ reelSeconds = 0; }
+        reelTime.textContent = formatMMSS(reelSeconds);
+        reelFill.style.width = `${(reelSeconds/REEL_DURATION)*100}%`;
+      }, 1000);
+    } else {
+      clearInterval(reelInterval);
+    }
+  });
+
+  // ---- reveal tiles on scroll ----
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.style.opacity = 1;
+        entry.target.style.transform = 'translateY(0)';
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold:.15 });
+
+  tiles.forEach(tile => {
+    tile.style.opacity = 0;
+    tile.style.transform = 'translateY(18px)';
+    tile.style.transition = 'opacity .6s ease, transform .6s ease';
+    revealObserver.observe(tile);
+  });
+</script>
+
+</body>
+</html>
