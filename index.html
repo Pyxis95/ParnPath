@@ -143,6 +143,26 @@
     display:flex; flex-direction:column; justify-content:flex-end;
   }
   .hero .graded{position:absolute; inset:0; z-index:0;}
+  .hero-video-wrap{position:absolute; inset:0; z-index:0; overflow:hidden; background:var(--panel2);}
+  .hero-video-wrap iframe{
+    position:absolute; top:50%; left:50%;
+    width:100vw; height:56.25vw;      /* 16:9 based on width */
+    min-height:100%; min-width:177.78vh; /* 16:9 based on height, guarantees full cover */
+    transform:translate(-50%,-50%);
+    pointer-events:none; border:0;
+  }
+  .hero-scrim{
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(to top, rgba(11,13,16,.92), rgba(11,13,16,0) 60%);
+  }
+  .mute-toggle{
+    position:absolute; z-index:3; right:clamp(16px,4vw,40px); bottom:28px;
+    width:44px; height:44px; border-radius:50%; border:1px solid var(--line);
+    background:rgba(11,13,16,.55); color:var(--paper); font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(8px); transition:border-color .25s, background .25s;
+  }
+  .mute-toggle:hover{border-color:var(--orange); background:rgba(11,13,16,.8);}
   .hero-content{position:relative; z-index:3; padding:0 clamp(16px,4vw,40px) 70px;}
   .hero-role{
     font-family:var(--mono); font-size:clamp(11px,1.6vw,14px); letter-spacing:.2em; text-transform:uppercase;
@@ -362,9 +382,14 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="hero" data-scene="HERO">
-    <div class="graded scrim real-photo">
-      <img src="images/hero-moon.jpg" alt="ท้องฟ้ายามพลบค่ำกับดวงจันทร์">
+    <div class="hero-video-wrap">
+      <iframe id="heroReelFrame"
+        src="https://www.youtube.com/embed/jNqLqFKxiFM?autoplay=1&mute=1&loop=1&playlist=jNqLqFKxiFM&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1&enablejsapi=1"
+        title="Showreel 2026" frameborder="0"
+        allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
+    <div class="hero-scrim"></div>
+    <button class="mute-toggle" id="muteToggle" aria-label="เปิด/ปิดเสียง">🔇</button>
     <div class="hero-content">
       <div class="hero-role">Cinematographer &amp; Camera Assistant</div>
       <h1>Parn Chanchanok</h1>
@@ -372,7 +397,7 @@
       <p class="hero-tag">ภาพทุกเฟรมมีความหมาย เราต้องใส่ใจในทุกแสงการเคลื่อนกล้องและมุมมอง</p>
       <div class="hero-actions">
         <button class="btn primary" onclick="openLightbox('Showreel 2026', 'jNqLqFKxiFM')">
-          <span class="play-ico"></span> Play Showreel 2026
+          <span class="play-ico"></span> Watch Showreel (Full)
         </button>
         <span class="scroll-cue">SCROLL</span>
       </div>
@@ -566,6 +591,30 @@
 </div>
 
 <script>
+  // ---- hero background showreel: mute/unmute control ----
+  let heroPlayer = null;
+  let heroMuted = true;
+  const muteBtn = document.getElementById('muteToggle');
+
+  window.onYouTubeIframeAPIReady = function(){
+    heroPlayer = new YT.Player('heroReelFrame', {});
+  };
+  const ytApiScript = document.createElement('script');
+  ytApiScript.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(ytApiScript);
+
+  muteBtn.addEventListener('click', ()=>{
+    if(!heroPlayer || typeof heroPlayer.unMute !== 'function') return;
+    if(heroMuted){
+      heroPlayer.unMute();
+      muteBtn.textContent = '🔊';
+    } else {
+      heroPlayer.mute();
+      muteBtn.textContent = '🔇';
+    }
+    heroMuted = !heroMuted;
+  });
+
   // ---- running timecode (24fps) ----
   let h=0,m=0,s=0,f=0;
   setInterval(()=>{
